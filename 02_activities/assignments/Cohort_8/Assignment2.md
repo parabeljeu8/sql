@@ -67,7 +67,7 @@ Steps to complete this part of the assignment:
 	- from [Github](./02_activities/assignments/assignment2.sql)
 	- or, from your local forked repository  
 - Complete each question
-
+ Please refer to document assignment_2.pdf saved in cohort 8 folder
 
 ### Write SQL
 
@@ -280,7 +280,6 @@ INNER JOIN vendor_inventory
 GROUP BY vendor.vendor_name, product.product_name, vendor_inventory.original_price
 ORDER BY vendor.vendor_name, product.product_name;
 
-
 #### INSERT
 1. Create a new table "product_units". This table will contain only products where the `product_qty_type = 'unit'`. It should use all of the columns from the product table, as well as a new column for the `CURRENT_TIMESTAMP`.  Name the timestamp column `snapshot_timestamp`.
 
@@ -298,7 +297,6 @@ WHERE product_qty_type = 'unit';
 INSERT INTO product_units (product_id, product_name, product_size, product_qty_type, product_category_id, snapshot_timestamp)
 VALUES ('30', 'Carrot Cake', '1', 'unit', '3', CURRENT_TIMESTAMP);
 
-
 #### DELETE 
 1. Delete the older record for the whatever product you added.
 
@@ -313,7 +311,6 @@ AND snapshot_timestamp < (
     FROM product_units
     WHERE product_id = '30'
 );
-
 
 #### UPDATE
 1. We want to add the current_quantity to the product_units table. First, add a new column, `current_quantity` to the table using the following syntax.
