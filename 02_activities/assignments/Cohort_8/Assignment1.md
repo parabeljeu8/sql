@@ -120,7 +120,17 @@ Steps to complete this part of the assignment:
 
 #### SELECT
 1. Write a query that returns everything in the customer table.
+
+SELECT*
+FROM customer;
+
 2. Write a query that displays all of the columns and 10 rows from the customer table, sorted by customer_last_name, then customer_first_ name.
+
+SELECT *
+FROM customer
+ORDER BY customer_last_name ASC, customer_first_name ASC
+LIMIT 10;
+
 
 <div align="center">-</div>
 
@@ -128,19 +138,51 @@ Steps to complete this part of the assignment:
 1. Write a query that returns all customer purchases of product IDs 4 and 9.
 2. Write a query that returns all customer purchases and a new calculated column 'price' (quantity * cost_to_customer_per_qty), filtered by customer IDs between 8 and 10 (inclusive) using either:
 	1.  two conditions using AND
+
+SELECT*,
+ (quantity * cost_to_customer_per_qty) AS price
+FROM customer_purchases
+WHERE customer_id >= 8 AND customer_id <= 10;
+
+
 	2.  one condition using BETWEEN
+
+SELECT*,
+	(quantity * cost_to_customer_per_qty) AS price
+FROM customer_purchases
+WHERE customer_id BETWEEN 8 AND 10;
 
 <div align="center">-</div>
 
 #### CASE
 1. Products can be sold by the individual unit or by bulk measures like lbs. or oz. Using the product table, write a query that outputs the `product_id` and `product_name` columns and add a column called `prod_qty_type_condensed` that displays the word “unit” if the `product_qty_type` is “unit,” and otherwise displays the word “bulk.”
 
+SELECT product_id, product_name,
+	CASE
+		WHEN product_qty_type = 'unit' THEN 'unit'
+		ELSE 'bulk'
+	END AS prod_qty_type_condensed
+FROM product;
+
+
 2. We want to flag all of the different types of pepper products that are sold at the market. Add a column to the previous query called `pepper_flag` that outputs a 1 if the product_name contains the word “pepper” (regardless of capitalization), and otherwise outputs 0.
+
+SELECT product_name,
+	CASE
+		WHEN product_name LIKE '%pepper%' THEN 1
+		ELSE 0
+	END AS pepper_flag
+FROM product;
 
 <div align="center">-</div>
 
 #### JOIN
 1. Write a query that `INNER JOIN`s the `vendor` table to the `vendor_booth_assignments` table on the `vendor_id` field they both have in common, and sorts the result by `vendor_name`, then `market_date`.
+
+SELECT vendor_name, market_date
+FROM vendor
+INNER JOIN vendor_booth_assignments ON vendor.vendor_id = vendor_booth_assignments.vendor_id
+ORDER BY vendor_name, market_date;
 
 ***
 
@@ -157,9 +199,23 @@ Steps to complete this part of the assignment:
 
 #### AGGREGATE
 1. Write a query that determines how many times each vendor has rented a booth at the farmer’s market by counting the vendor booth assignments per `vendor_id`.
+
+SELECT vendor_id,
+count (booth_number) as total_booth_rental
+FROM vendor_booth_assignments
+GROUP BY vendor_id;
+
 2. The Farmer’s Market Customer Appreciation Committee wants to give a bumper sticker to everyone who has ever spent more than $2000 at the market. Write a query that generates a list of customers for them to give stickers to, sorted by last name, then first name.
    
 **HINT**: This query requires you to join two tables, use an aggregate function, and use the HAVING keyword.
+
+SELECT customer_last_name, customer_first_name,
+	SUM(customer_purchases.quantity * customer_purchases.cost_to_customer_per_qty) AS total_spent
+FROM customer
+INNER JOIN customer_purchases ON customer.customer_id = customer_purchases.customer_id
+GROUP BY customer_last_name, customer_first_name
+HAVING total_spent > 2000
+ORDER BY customer_last_name, customer_first_name;
 
 <div align="center">-</div>
 
@@ -171,6 +227,12 @@ Steps to complete this part of the assignment:
 To insert the new row use VALUES, specifying the value you want for each column:  
 `VALUES(col1,col2,col3,col4,col5)`
 
+CREATE TEMP TABLE new_vendor as
+SELECT*
+FROM vendor;
+INSERT INTO new_vendor (vendor_id, vendor_name, vendor_type, vendor_owner_first_name, vendor_owner_last_name)
+VALUES (10, 'Thomass Superfood Store', 'Fresh Focused store', 'Thomas', 'Rosenthal');
+
 <div align="center">-</div>
 
 #### Date
@@ -181,3 +243,5 @@ To insert the new row use VALUES, specifying the value you want for each column:
 2. Using the previous query as a base, determine how much money each customer spent in April 2022. Remember that money spent is `quantity*cost_to_customer_per_qty`.
    
 **HINTS**: you will need to AGGREGATE, GROUP BY, and filter...but remember, STRFTIME returns a STRING for your WHERE statement!!
+
+My answer
